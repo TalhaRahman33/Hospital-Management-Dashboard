@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Building2, ChevronRight, LayoutDashboard, X } from 'lucide-react';
+import { Building2, ChevronRight, LayoutDashboard, Users, X } from 'lucide-react';
 
 const navItems = [
   {
@@ -14,6 +14,11 @@ const navItems = [
     href: '/super-admin/hospitals',
     label: 'Hospitals',
     icon: Building2,
+  },
+  {
+    href: '/super-admin/users',
+    label: 'Users',
+    icon: Users,
   },
 ];
 

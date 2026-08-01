@@ -4,9 +4,11 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 
 import { loginApi } from "../_lib/apiHandler";
+import { useAuthStore } from "@/store/authStore";
 
 export default function LoginForm() {
   const router = useRouter();
+  const loginUser = useAuthStore((state) => state.loginUser);
 
   const [formData, setFormData] = useState({
     email: "",
@@ -45,6 +47,28 @@ export default function LoginForm() {
         );
 
         router.push("/verify-2fa");
+        return;
+      }
+
+      const token = data?.accessToken || data?.token || data?.authToken || data?.data?.accessToken || data?.data?.token || data?.data?.authToken;
+      const user = data?.user || data?.profile || data?.data?.user || data?.data?.profile || null;
+
+      if (token) {
+        loginUser(token, user);
+      }
+
+      const roleId = user?.roleId ?? data.roleId;
+
+      if (roleId === 1) {
+        router.replace("/super-admin/dashboard");
+      } else if (roleId === 2) {
+        router.replace("/pmo/dashboard");
+      } else if (roleId === 3) {
+        router.replace("/dmo/dashboard");
+      } else if (roleId === 4 || roleId === 5) {
+        router.replace("/hospital/dashboard");
+      } else {
+        setError("Your account role is not configured.");
       }
     } catch (error) {
       setError(error.message);

@@ -57,7 +57,12 @@ export default function OTPForm() {
        * Save authenticated user and access token
        * in Zustand memory.
        */
-      loginUser(data.accessToken, data.user);
+      const token = data?.accessToken || data?.token || data?.authToken || data?.data?.accessToken || data?.data?.token || data?.data?.authToken;
+      const user = data?.user || data?.data?.user || null;
+
+      if (token) {
+        loginUser(token, user);
+      }
 
       // OTP login session is no longer needed
       sessionStorage.removeItem("loginUserId");
