@@ -57,6 +57,8 @@ export default function LoginForm() {
         loginUser(token, user);
       }
 
+      sessionStorage.removeItem("loginUserId");
+
       const roleId = user?.roleId ?? data.roleId;
 
       if (roleId === 1) {
