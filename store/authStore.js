@@ -25,6 +25,12 @@ const getStoredAuth = () => {
 
 const initialAuth = getStoredAuth();
 
+export const clearAuthSession = () => {
+  if (typeof window !== "undefined") {
+    sessionStorage.removeItem("authState");
+  }
+};
+
 export const useAuthStore = create((set) => ({
   accessToken: initialAuth.accessToken,
   user: initialAuth.user,
@@ -40,9 +46,7 @@ export const useAuthStore = create((set) => ({
   },
 
   logoutUser: () => {
-    if (typeof window !== "undefined") {
-      sessionStorage.removeItem("authState");
-    }
+    clearAuthSession();
 
     set({
       accessToken: null,

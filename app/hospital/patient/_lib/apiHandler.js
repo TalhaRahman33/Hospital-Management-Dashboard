@@ -45,7 +45,14 @@ export const patientAPI = {
     });
 
     if (!response.ok) {
-      throw new Error("Failed to create patient");
+      const data = await response.json().catch(() => ({}));
+
+      if (response.status === 401 && typeof window !== "undefined") {
+        sessionStorage.removeItem("authState");
+        window.location.href = data?.redirectTo || "/login";
+      }
+
+      throw new Error(data?.message || "Failed to create patient");
     }
 
     return response.json();
@@ -59,7 +66,14 @@ export const patientAPI = {
     });
 
     if (!response.ok) {
-      throw new Error("Failed to fetch patients");
+      const data = await response.json().catch(() => ({}));
+
+      if (response.status === 401 && typeof window !== "undefined") {
+        sessionStorage.removeItem("authState");
+        window.location.href = data?.redirectTo || "/login";
+      }
+
+      throw new Error(data?.message || "Failed to fetch patients");
     }
 
     return response.json();
@@ -105,7 +119,14 @@ export const patientAPI = {
     });
 
     if (!response.ok) {
-      throw new Error("Failed to update patient");
+      const data = await response.json().catch(() => ({}));
+
+      if (response.status === 401 && typeof window !== "undefined") {
+        sessionStorage.removeItem("authState");
+        window.location.href = data?.redirectTo || "/login";
+      }
+
+      throw new Error(data?.message || "Failed to update patient");
     }
 
     return response.json();
@@ -119,7 +140,14 @@ export const patientAPI = {
     });
 
     if (!response.ok) {
-      throw new Error("Failed to delete patient");
+      const data = await response.json().catch(() => ({}));
+
+      if (response.status === 401 && typeof window !== "undefined") {
+        sessionStorage.removeItem("authState");
+        window.location.href = data?.redirectTo || "/login";
+      }
+
+      throw new Error(data?.message || "Failed to delete patient");
     }
 
     return response.json();

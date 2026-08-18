@@ -31,6 +31,8 @@ export default function AuthGuard({ children, allowedRoles = [] }) {
     const roleId = Number(user?.roleId);
 
     if (!accessToken || !user) {
+      useAuthStore.getState().logoutUser();
+      router.replace("/login");
       setIsChecking(false);
       return;
     }

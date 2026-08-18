@@ -75,7 +75,8 @@ const handleApiError = async (
   // Authentication failed
   if (response.status === 401) {
     if (typeof window !== "undefined") {
-      window.location.href = "/login";
+      sessionStorage.removeItem("authState");
+      window.location.href = data?.redirectTo || "/login";
     }
   }
 
