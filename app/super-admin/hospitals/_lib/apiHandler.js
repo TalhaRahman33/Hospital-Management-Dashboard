@@ -1,4 +1,39 @@
-const API_URL = process.env.NEXT_PUBLIC_API_URL;
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
+
+const getAuthToken = () => {
+  if (typeof window === "undefined") {
+    return null;
+  }
+
+  try {
+    const stored = sessionStorage.getItem("authState");
+
+    if (!stored) {
+      return null;
+    }
+
+    const parsed = JSON.parse(stored);
+    return parsed?.accessToken ?? null;
+  } catch {
+    return null;
+  }
+};
+
+const buildHeaders = (includeJson = false) => {
+  const headers = {};
+
+  if (includeJson) {
+    headers["Content-Type"] = "application/json";
+  }
+
+  const token = getAuthToken();
+
+  if (token) {
+    headers.Authorization = `Bearer ${token}`;
+  }
+
+  return headers;
+};
 
 // =====================================================
 // CREATE HOSPITAL
@@ -7,22 +42,15 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL;
 export const createHospitalApi = async (hospitalData) => {
   const response = await fetch(`${API_URL}/hospitals`, {
     method: "POST",
-
-    headers: {
-      "Content-Type": "application/json",
-    },
-
+    headers: buildHeaders(true),
     credentials: "include",
-
     body: JSON.stringify(hospitalData),
   });
 
   const data = await response.json();
 
   if (!response.ok) {
-    throw new Error(
-      data.message || "Failed to create hospital"
-    );
+    throw new Error(data.message || "Failed to create hospital");
   }
 
   return data;
@@ -35,20 +63,14 @@ export const createHospitalApi = async (hospitalData) => {
 export const getHospitalsApi = async () => {
   const response = await fetch(`${API_URL}/hospitals`, {
     method: "GET",
-
-    headers: {
-      "Content-Type": "application/json",
-    },
-
+    headers: buildHeaders(),
     credentials: "include",
   });
 
   const data = await response.json();
 
   if (!response.ok) {
-    throw new Error(
-      data.message || "Failed to get hospitals"
-    );
+    throw new Error(data.message || "Failed to get hospitals");
   }
 
   return data;
@@ -59,25 +81,16 @@ export const getHospitalsApi = async () => {
 // =====================================================
 
 export const getHospitalByIdApi = async (id) => {
-  const response = await fetch(
-    `${API_URL}/hospitals/${id}`,
-    {
-      method: "GET",
-
-      headers: {
-        "Content-Type": "application/json",
-      },
-
-      credentials: "include",
-    }
-  );
+  const response = await fetch(`${API_URL}/hospitals/${id}`, {
+    method: "GET",
+    headers: buildHeaders(),
+    credentials: "include",
+  });
 
   const data = await response.json();
 
   if (!response.ok) {
-    throw new Error(
-      data.message || "Failed to get hospital"
-    );
+    throw new Error(data.message || "Failed to get hospital");
   }
 
   return data;
@@ -87,31 +100,18 @@ export const getHospitalByIdApi = async (id) => {
 // UPDATE HOSPITAL
 // =====================================================
 
-export const updateHospitalApi = async (
-  id,
-  hospitalData
-) => {
-  const response = await fetch(
-    `${API_URL}/hospitals/${id}`,
-    {
-      method: "PUT",
-
-      headers: {
-        "Content-Type": "application/json",
-      },
-
-      credentials: "include",
-
-      body: JSON.stringify(hospitalData),
-    }
-  );
+export const updateHospitalApi = async (id, hospitalData) => {
+  const response = await fetch(`${API_URL}/hospitals/${id}`, {
+    method: "PUT",
+    headers: buildHeaders(true),
+    credentials: "include",
+    body: JSON.stringify(hospitalData),
+  });
 
   const data = await response.json();
 
   if (!response.ok) {
-    throw new Error(
-      data.message || "Failed to update hospital"
-    );
+    throw new Error(data.message || "Failed to update hospital");
   }
 
   return data;
@@ -122,25 +122,16 @@ export const updateHospitalApi = async (
 // =====================================================
 
 export const deleteHospitalApi = async (id) => {
-  const response = await fetch(
-    `${API_URL}/hospitals/${id}`,
-    {
-      method: "DELETE",
-
-      headers: {
-        "Content-Type": "application/json",
-      },
-
-      credentials: "include",
-    }
-  );
+  const response = await fetch(`${API_URL}/hospitals/${id}`, {
+    method: "DELETE",
+    headers: buildHeaders(),
+    credentials: "include",
+  });
 
   const data = await response.json();
 
   if (!response.ok) {
-    throw new Error(
-      data.message || "Failed to delete hospital"
-    );
+    throw new Error(data.message || "Failed to delete hospital");
   }
 
   return data;

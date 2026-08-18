@@ -1,4 +1,39 @@
-const API_URL = process.env.NEXT_PUBLIC_API_URL;
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
+
+const getAuthToken = () => {
+  if (typeof window === "undefined") {
+    return null;
+  }
+
+  try {
+    const stored = sessionStorage.getItem("authState");
+
+    if (!stored) {
+      return null;
+    }
+
+    const parsed = JSON.parse(stored);
+    return parsed?.accessToken ?? null;
+  } catch {
+    return null;
+  }
+};
+
+const buildHeaders = (includeJson = false) => {
+  const headers = {};
+
+  if (includeJson) {
+    headers["Content-Type"] = "application/json";
+  }
+
+  const token = getAuthToken();
+
+  if (token) {
+    headers.Authorization = `Bearer ${token}`;
+  }
+
+  return headers;
+};
 
 // =====================================================
 // PARSE RESPONSE
@@ -61,13 +96,8 @@ export const createUserApi = async (userData) => {
     `${API_URL}/users`,
     {
       method: "POST",
-
-      headers: {
-        "Content-Type": "application/json",
-      },
-
+      headers: buildHeaders(true),
       credentials: "include",
-
       body: JSON.stringify(userData),
     }
   );
@@ -91,11 +121,7 @@ export const getUsersApi = async () => {
     `${API_URL}/users`,
     {
       method: "GET",
-
-      headers: {
-        "Content-Type": "application/json",
-      },
-
+      headers: buildHeaders(),
       credentials: "include",
     }
   );
@@ -119,11 +145,7 @@ export const getUserByIdApi = async (id) => {
     `${API_URL}/users/${id}`,
     {
       method: "GET",
-
-      headers: {
-        "Content-Type": "application/json",
-      },
-
+      headers: buildHeaders(),
       credentials: "include",
     }
   );
@@ -150,13 +172,8 @@ export const updateUserApi = async (
     `${API_URL}/users/${id}`,
     {
       method: "PUT",
-
-      headers: {
-        "Content-Type": "application/json",
-      },
-
+      headers: buildHeaders(true),
       credentials: "include",
-
       body: JSON.stringify(userData),
     }
   );
@@ -180,11 +197,7 @@ export const deleteUserApi = async (id) => {
     `${API_URL}/users/${id}`,
     {
       method: "DELETE",
-
-      headers: {
-        "Content-Type": "application/json",
-      },
-
+      headers: buildHeaders(),
       credentials: "include",
     }
   );
@@ -208,11 +221,7 @@ export const getHospitalsApi = async () => {
     `${API_URL}/hospitals`,
     {
       method: "GET",
-
-      headers: {
-        "Content-Type": "application/json",
-      },
-
+      headers: buildHeaders(),
       credentials: "include",
     }
   );

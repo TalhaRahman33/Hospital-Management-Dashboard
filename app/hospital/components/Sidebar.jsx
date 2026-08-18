@@ -6,7 +6,7 @@ import { LayoutDashboard, BedDouble, ClipboardPlus, DoorOpen, Activity, Settings
 
 const NAV_ITEMS = [
   { label: 'Dashboard', href: '/hospital/dashboard', icon: LayoutDashboard, accent: '#14B8A6' },
-  { label: 'Patient', href: '/hospital/patients', icon: BedDouble, accent: '#6366F1' },
+  { label: 'Patient', href: '/hospital/patient', icon: BedDouble, accent: '#6366F1' },
   { label: 'Checkup Patient', href: '/hospital/checkup-patient', icon: ClipboardPlus, accent: '#F59E0B' },
   { label: 'Discharge Patient', href: '/hospital/discharge-patient', icon: DoorOpen, accent: '#EF4444' },
 ]
