@@ -1,6 +1,28 @@
+// components/PatientForm.jsx
 "use client";
 
 import { useState, useEffect } from "react";
+import { User, CreditCard, Users, ClipboardList, Loader2, AlertCircle } from "lucide-react";
+
+const GENDER_OPTIONS = [
+  { value: "Male", accent: "#6366F1" },
+  { value: "Female", accent: "#14B8A6" },
+  { value: "Other", accent: "#F59E0B" },
+];
+
+const PURPOSE_OPTIONS = ["Medical", "Non Medical"];
+
+const CNIC_DIGIT_LIMIT = 13;
+
+const formatCnic = (digits) => {
+  if (digits.length > 12) {
+    return `${digits.slice(0, 5)}-${digits.slice(5, 12)}-${digits.slice(12)}`;
+  }
+  if (digits.length > 5) {
+    return `${digits.slice(0, 5)}-${digits.slice(5)}`;
+  }
+  return digits;
+};
 
 export default function PatientForm({ initialData = null, onSubmit, isLoading }) {
   const [formData, setFormData] = useState({
@@ -23,6 +45,9 @@ export default function PatientForm({ initialData = null, onSubmit, isLoading })
     }
   }, [initialData]);
 
+  const cnicDigits = formData.cnic.replace(/\D/g, "");
+  const isCnicIncomplete = cnicDigits.length > 0 && cnicDigits.length < CNIC_DIGIT_LIMIT;
+
   const validateForm = () => {
     const newErrors = {};
 
@@ -32,6 +57,8 @@ export default function PatientForm({ initialData = null, onSubmit, isLoading })
 
     if (!formData.cnic.trim()) {
       newErrors.cnic = "CNIC is required";
+    } else if (cnicDigits.length < CNIC_DIGIT_LIMIT) {
+      newErrors.cnic = `CNIC must be ${CNIC_DIGIT_LIMIT} digits`;
     }
 
     if (!formData.gender) {
@@ -52,12 +79,28 @@ export default function PatientForm({ initialData = null, onSubmit, isLoading })
       ...prev,
       [name]: value,
     }));
-    // Clear error for this field
     if (errors[name]) {
       setErrors((prev) => ({
         ...prev,
         [name]: "",
       }));
+    }
+  };
+
+  const handleCnicChange = (e) => {
+    const digits = e.target.value.replace(/\D/g, "").slice(0, CNIC_DIGIT_LIMIT);
+    const formatted = formatCnic(digits);
+
+    setFormData((prev) => ({ ...prev, cnic: formatted }));
+    if (errors.cnic) {
+      setErrors((prev) => ({ ...prev, cnic: "" }));
+    }
+  };
+
+  const handleGenderSelect = (value) => {
+    setFormData((prev) => ({ ...prev, gender: value }));
+    if (errors.gender) {
+      setErrors((prev) => ({ ...prev, gender: "" }));
     }
   };
 
@@ -71,93 +114,171 @@ export default function PatientForm({ initialData = null, onSubmit, isLoading })
     onSubmit(formData);
   };
 
+  const inputBase =
+    "mt-1.5 block w-full rounded-lg border bg-white pl-10 pr-3 py-2.5 text-[13.5px] text-slate-800 placeholder-slate-400 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-0";
+
+  const cnicHasError = Boolean(errors.cnic) || isCnicIncomplete;
+
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
+    <form onSubmit={handleSubmit} className="space-y-5">
+      {/* Name */}
       <div>
-        <label htmlFor="name" className="block text-sm font-medium text-gray-700">
+        <label htmlFor="name" className="text-[12.5px] font-medium text-slate-600">
           Patient Name
         </label>
-        <input
-          type="text"
-          id="name"
-          name="name"
-          value={formData.name}
-          onChange={handleChange}
-          className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-400 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
-          placeholder="Enter patient name"
-          disabled={isLoading}
-        />
+        <div className="relative">
+          <User className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" strokeWidth={2} />
+          <input
+            type="text"
+            id="name"
+            name="name"
+            value={formData.name}
+            onChange={handleChange}
+            className={`${inputBase} ${
+              errors.name
+                ? "border-rose-300 focus:border-rose-400 focus:ring-rose-100"
+                : "border-slate-200 focus:border-[#6366F1] focus:ring-[#6366F1]/15"
+            }`}
+            placeholder="Enter patient name"
+            disabled={isLoading}
+          />
+        </div>
         {errors.name && (
-          <p className="mt-1 text-sm text-red-600">{errors.name}</p>
+          <p className="mt-1.5 flex items-center gap-1 text-xs text-rose-500">
+            <AlertCircle className="h-3.5 w-3.5" strokeWidth={2} />
+            {errors.name}
+          </p>
         )}
       </div>
 
+      {/* CNIC */}
       <div>
-        <label htmlFor="cnic" className="block text-sm font-medium text-gray-700">
-          CNIC
-        </label>
-        <input
-          type="text"
-          id="cnic"
-          name="cnic"
-          value={formData.cnic}
-          onChange={handleChange}
-          className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-400 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
-          placeholder="Enter CNIC number"
-          disabled={isLoading}
-        />
-        {errors.cnic && (
-          <p className="mt-1 text-sm text-red-600">{errors.cnic}</p>
-        )}
+        <div className="flex items-center justify-between">
+          <label htmlFor="cnic" className="text-[12.5px] font-medium text-slate-600">
+            CNIC
+          </label>
+          <span
+            className={`font-['JetBrains_Mono'] text-[11px] font-medium ${
+              cnicHasError ? "text-rose-500" : cnicDigits.length === CNIC_DIGIT_LIMIT ? "text-[#0d9488]" : "text-slate-400"
+            }`}
+          >
+            ({cnicDigits.length}/{CNIC_DIGIT_LIMIT})
+          </span>
+        </div>
+        <div className="relative">
+          <CreditCard className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" strokeWidth={2} />
+          <input
+            type="text"
+            inputMode="numeric"
+            id="cnic"
+            name="cnic"
+            value={formData.cnic}
+            onChange={handleCnicChange}
+            maxLength={15}
+            className={`${inputBase} font-['JetBrains_Mono'] tracking-wide ${
+              cnicHasError
+                ? "border-rose-300 focus:border-rose-400 focus:ring-rose-100 text-rose-600"
+                : "border-slate-200 focus:border-[#6366F1] focus:ring-[#6366F1]/15"
+            }`}
+            placeholder="16201-9869560-2"
+            disabled={isLoading}
+          />
+        </div>
+        {errors.cnic ? (
+          <p className="mt-1.5 flex items-center gap-1 text-xs text-rose-500">
+            <AlertCircle className="h-3.5 w-3.5" strokeWidth={2} />
+            {errors.cnic}
+          </p>
+        ) : isCnicIncomplete ? (
+          <p className="mt-1.5 flex items-center gap-1 text-xs text-rose-500">
+            <AlertCircle className="h-3.5 w-3.5" strokeWidth={2} />
+            {CNIC_DIGIT_LIMIT - cnicDigits.length} digit(s) remaining
+          </p>
+        ) : null}
       </div>
 
+      {/* Gender */}
       <div>
-        <label htmlFor="gender" className="block text-sm font-medium text-gray-700">
-          Gender
-        </label>
-        <select
-          id="gender"
-          name="gender"
-          value={formData.gender}
-          onChange={handleChange}
-          className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-gray-900 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
-          disabled={isLoading}
-        >
-          <option value="">Select Gender</option>
-          <option value="Male">Male</option>
-          <option value="Female">Female</option>
-          <option value="Other">Other</option>
-        </select>
+        <label className="text-[12.5px] font-medium text-slate-600">Gender</label>
+        <div className="mt-1.5 grid grid-cols-3 gap-2">
+          {GENDER_OPTIONS.map(({ value, accent }) => {
+            const isActive = formData.gender === value;
+            return (
+              <button
+                key={value}
+                type="button"
+                disabled={isLoading}
+                onClick={() => handleGenderSelect(value)}
+                className="rounded-lg border px-3 py-2.5 text-[13px] font-medium transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                style={{
+                  borderColor: isActive ? accent : "#E2E8F0",
+                  backgroundColor: isActive ? `${accent}14` : "#FFFFFF",
+                  color: isActive ? accent : "#64748B",
+                }}
+              >
+                {value}
+              </button>
+            );
+          })}
+        </div>
         {errors.gender && (
-          <p className="mt-1 text-sm text-red-600">{errors.gender}</p>
+          <p className="mt-1.5 flex items-center gap-1 text-xs text-rose-500">
+            <AlertCircle className="h-3.5 w-3.5" strokeWidth={2} />
+            {errors.gender}
+          </p>
         )}
       </div>
 
+      {/* Purpose of visit */}
       <div>
-        <label htmlFor="purposeOfVisit" className="block text-sm font-medium text-gray-700">
+        <label htmlFor="purposeOfVisit" className="text-[12.5px] font-medium text-slate-600">
           Purpose of Visit
         </label>
-        <textarea
-          id="purposeOfVisit"
-          name="purposeOfVisit"
-          value={formData.purposeOfVisit}
-          onChange={handleChange}
-          rows="3"
-          className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-400 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
-          placeholder="Enter purpose of visit"
-          disabled={isLoading}
-        />
+        <div className="relative">
+          <ClipboardList className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" strokeWidth={2} />
+          <select
+            id="purposeOfVisit"
+            name="purposeOfVisit"
+            value={formData.purposeOfVisit}
+            onChange={handleChange}
+            className={`${inputBase} appearance-none pr-8 ${
+              errors.purposeOfVisit
+                ? "border-rose-300 focus:border-rose-400 focus:ring-rose-100"
+                : "border-slate-200 focus:border-[#6366F1] focus:ring-[#6366F1]/15"
+            }`}
+            disabled={isLoading}
+          >
+            <option value="">Select purpose</option>
+            {PURPOSE_OPTIONS.map((option) => (
+              <option key={option} value={option}>
+                {option}
+              </option>
+            ))}
+          </select>
+          <svg
+            className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+          </svg>
+        </div>
         {errors.purposeOfVisit && (
-          <p className="mt-1 text-sm text-red-600">{errors.purposeOfVisit}</p>
+          <p className="mt-1.5 flex items-center gap-1 text-xs text-rose-500">
+            <AlertCircle className="h-3.5 w-3.5" strokeWidth={2} />
+            {errors.purposeOfVisit}
+          </p>
         )}
       </div>
 
       <button
         type="submit"
         disabled={isLoading}
-        className="w-full rounded-md bg-blue-600 px-4 py-2 text-white font-medium hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
+        className="flex w-full items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-[#6366F1] to-[#14B8A6] px-4 py-2.5 text-[13.5px] font-semibold text-white shadow-sm transition-all hover:shadow-md hover:brightness-105 active:scale-[0.99] disabled:opacity-50 disabled:cursor-not-allowed"
       >
-        {isLoading ? "Loading..." : initialData ? "Update Patient" : "Add Patient"}
+        {isLoading && <Loader2 className="h-4 w-4 animate-spin" strokeWidth={2.5} />}
+        {isLoading ? "Saving..." : initialData ? "Update Patient" : "Add Patient"}
       </button>
     </form>
   );

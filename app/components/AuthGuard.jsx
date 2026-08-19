@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 
 import { useAuthStore } from '@/store/authStore';
@@ -13,6 +13,7 @@ export default function AuthGuard({ children, allowedRoles = [] }) {
   const { accessToken, user } = useAuthStore();
   const [isChecking, setIsChecking] = useState(true);
   const [hasMounted, setHasMounted] = useState(false);
+  const redirectAttemptedRef = useRef(false);
 
   useEffect(() => {
     setHasMounted(true);
@@ -24,6 +25,7 @@ export default function AuthGuard({ children, allowedRoles = [] }) {
     }
 
     if (PUBLIC_PATHS.includes(pathname)) {
+      redirectAttemptedRef.current = false;
       setIsChecking(false);
       return;
     }
@@ -31,11 +33,17 @@ export default function AuthGuard({ children, allowedRoles = [] }) {
     const roleId = Number(user?.roleId);
 
     if (!accessToken || !user) {
-      useAuthStore.getState().logoutUser();
-      router.replace("/login");
+      if (!redirectAttemptedRef.current) {
+        redirectAttemptedRef.current = true;
+        useAuthStore.getState().logoutUser();
+        router.replace('/login');
+      }
+
       setIsChecking(false);
       return;
     }
+
+    redirectAttemptedRef.current = false;
 
     if (allowedRoles.length > 0 && !allowedRoles.includes(roleId)) {
       setIsChecking(false);

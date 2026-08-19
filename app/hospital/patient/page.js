@@ -1,6 +1,8 @@
+// app/hospital/patient/page.js
 "use client";
 
 import { useState, useEffect } from "react";
+import { UserPlus, AlertCircle, CheckCircle2, BedDouble } from "lucide-react";
 import PatientDialog from "./components/PatientDialog";
 import PatientTable from "./components/PatientTable";
 import { patientAPI } from "./_lib/apiHandler";
@@ -101,66 +103,50 @@ export default function PatientsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 p-8">
+    <div className="min-h-screen bg-slate-50 p-8">
       <div className="mx-auto max-w-7xl">
         {/* Header */}
         <div className="mb-8 flex items-center justify-between">
-          <div>
-            <h1 className="text-3xl font-bold text-gray-900">Patients</h1>
-            <p className="mt-1 text-gray-600">
-              Manage patient information and records
-            </p>
+          <div className="flex items-center gap-4">
+            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-[#6366F1]/10 to-[#14B8A6]/10">
+              <BedDouble className="h-6 w-6 text-[#6366F1]" strokeWidth={2} />
+            </div>
+            <div>
+              <h1 className="font-['Space_Grotesk'] text-2xl font-semibold text-slate-900">
+                Patients
+              </h1>
+              <p className="mt-0.5 text-[13px] text-slate-500">
+                Manage patient information and records
+              </p>
+            </div>
           </div>
           <button
             onClick={handleAddPatient}
             disabled={isLoading}
-            className="rounded-lg bg-blue-600 px-6 py-2 text-white font-medium hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition"
+            className="flex items-center gap-2 rounded-lg bg-gradient-to-r from-[#6366F1] to-[#14B8A6] px-5 py-2.5 text-[13.5px] font-semibold text-white shadow-sm transition-all hover:shadow-md hover:brightness-105 active:scale-[0.99] disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            + Add Patient
+            <UserPlus className="h-4 w-4" strokeWidth={2.25} />
+            Add Patient
           </button>
         </div>
 
         {/* Alert Messages */}
         {error && (
-          <div className="mb-4 rounded-lg bg-red-50 p-4 border border-red-200">
-            <div className="flex items-start">
-              <svg
-                className="h-5 w-5 text-red-600 mt-0.5"
-                fill="currentColor"
-                viewBox="0 0 20 20"
-              >
-                <path
-                  fillRule="evenodd"
-                  d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
-                  clipRule="evenodd"
-                />
-              </svg>
-              <span className="ml-3 text-red-800">{error}</span>
-            </div>
+          <div className="mb-4 flex items-start gap-3 rounded-xl border border-rose-200 bg-rose-50 px-4 py-3.5">
+            <AlertCircle className="h-5 w-5 shrink-0 text-rose-500 mt-0.5" strokeWidth={2} />
+            <span className="text-[13.5px] text-rose-700">{error}</span>
           </div>
         )}
 
         {success && (
-          <div className="mb-4 rounded-lg bg-green-50 p-4 border border-green-200">
-            <div className="flex items-start">
-              <svg
-                className="h-5 w-5 text-green-600 mt-0.5"
-                fill="currentColor"
-                viewBox="0 0 20 20"
-              >
-                <path
-                  fillRule="evenodd"
-                  d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                  clipRule="evenodd"
-                />
-              </svg>
-              <span className="ml-3 text-green-800">{success}</span>
-            </div>
+          <div className="mb-4 flex items-start gap-3 rounded-xl border border-[#14B8A6]/25 bg-[#14B8A6]/[0.07] px-4 py-3.5">
+            <CheckCircle2 className="h-5 w-5 shrink-0 text-[#0d9488] mt-0.5" strokeWidth={2} />
+            <span className="text-[13.5px] text-[#0d9488]">{success}</span>
           </div>
         )}
 
         {/* Content */}
-        <div className="rounded-lg bg-white shadow">
+        <div className="rounded-2xl bg-white shadow-sm border border-slate-100">
           <div className="p-6">
             <PatientTable
               patients={patients}
