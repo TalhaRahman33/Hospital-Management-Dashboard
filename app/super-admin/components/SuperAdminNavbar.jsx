@@ -39,7 +39,6 @@ export default function SuperAdminNavbar({ onMenuClick, userName }) {
             </div>
             <div className="text-left">
               <p className="text-sm font-semibold text-slate-800">{userName || 'Super Admin'}</p>
-              <p className="text-xs text-slate-500">Administrator</p>
             </div>
           </div>
 

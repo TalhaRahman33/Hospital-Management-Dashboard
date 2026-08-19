@@ -4,6 +4,7 @@ import React from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { LayoutDashboard, BedDouble, ClipboardPlus, DoorOpen, Activity, Settings } from 'lucide-react'
+import { useAuthStore } from '@/store/authStore'
 
 const NAV_ITEMS = [
   { label: 'Dashboard', href: '/hospital/dashboard', icon: LayoutDashboard, accent: '#14B8A6' },
@@ -14,6 +15,8 @@ const NAV_ITEMS = [
 
 const Sidebar = () => {
   const pathname = usePathname()
+  const user = useAuthStore((state) => state.user)
+  const hospitalName = user?.hospitalAssignments?.[0]?.hospital?.name || 'No hospital assigned'
 
   return (
     <aside className="fixed left-0 top-0 h-screen w-[260px] bg-[#0B1526] flex flex-col z-20">
@@ -24,7 +27,7 @@ const Sidebar = () => {
         </div>
         <div className="min-w-0">
           <p className="font-['Space_Grotesk'] text-white text-[15px] font-semibold leading-tight truncate">
-            Hazro General
+            {hospitalName}
           </p>
           <p className="font-['JetBrains_Mono'] text-[10px] tracking-[0.14em] text-slate-500 uppercase mt-0.5">
             Patient Care System

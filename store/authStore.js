@@ -45,6 +45,21 @@ export const useAuthStore = create((set) => ({
     set(nextAuth);
   },
 
+  updateUser: (user) => {
+    set((state) => {
+      const nextAuth = {
+        accessToken: state.accessToken,
+        user,
+      };
+
+      if (typeof window !== "undefined") {
+        sessionStorage.setItem("authState", JSON.stringify(nextAuth));
+      }
+
+      return { user };
+    });
+  },
+
   logoutUser: () => {
     clearAuthSession();
 

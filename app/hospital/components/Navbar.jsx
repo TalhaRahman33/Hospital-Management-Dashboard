@@ -1,13 +1,47 @@
 // components/Navbar.jsx
 "use client"
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Bell, ChevronDown, LogOut } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { useAuthStore } from '@/store/authStore'
+import { getCurrentUser } from '../_lib/apiHandler'
 
 const Navbar = () => {
   const router = useRouter();
-  const { logoutUser } = useAuthStore();
+  const { accessToken, user, updateUser, logoutUser } = useAuthStore();
+
+  useEffect(() => {
+    const loadCurrentUser = async () => {
+      if (!accessToken) {
+        return;
+      }
+
+      try {
+        const currentUser = await getCurrentUser();
+
+        if (currentUser) {
+          updateUser(currentUser);
+        }
+      } catch {
+        // Keep the cached user visible when the profile request is unavailable.
+      }
+    };
+
+    loadCurrentUser();
+  }, [accessToken, updateUser]);
+
+  const fullName = [user?.firstName, user?.lastName]
+    .filter(Boolean)
+    .join(' ') || user?.name || 'User';
+  const initials = fullName
+    .split(' ')
+    .filter(Boolean)
+    .map((part) => part[0])
+    .join('')
+    .slice(0, 2)
+    .toUpperCase();
+  const roleName = user?.role?.name || user?.role?.title || user?.role || 'Staff';
+  const hospitalName = user?.hospitalAssignments?.[0]?.hospital?.name || 'No hospital assigned';
 
   const handleLogout = () => {
     logoutUser();
@@ -34,11 +68,11 @@ const Navbar = () => {
 
         <button className="flex items-center gap-3 group" type="button">
           <div className="w-9 h-9 rounded-full bg-gradient-to-br from-[#6366F1] to-[#14B8A6] flex items-center justify-center text-white text-xs font-semibold font-['Space_Grotesk'] shadow-sm">
-            AR
+            {initials}
           </div>
           <div className="text-left hidden sm:block">
-            <p className="text-[13px] font-medium text-slate-800 leading-tight">Dr. Ayesha Raza</p>
-            <p className="text-[11px] text-slate-400 leading-tight mt-0.5">Chief Physician</p>
+            <p className="text-[13px] font-medium text-slate-800 leading-tight">{fullName}</p>
+            <p className="text-[11px] text-slate-400 leading-tight">{roleName} · {hospitalName}</p>
           </div>
           <ChevronDown
             className="w-4 h-4 text-slate-400 group-hover:text-slate-600 transition-colors"
