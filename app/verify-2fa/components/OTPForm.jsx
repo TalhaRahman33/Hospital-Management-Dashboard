@@ -158,13 +158,13 @@ export default function OTPForm() {
 
         case 4:
           router.replace(
-            "/hospital/dashboard"
+            "/hospital/home"
           );
           break;
 
         case 5:
           router.replace(
-            "/hospital/dashboard"
+            "/hospital/home"
           );
           break;
 

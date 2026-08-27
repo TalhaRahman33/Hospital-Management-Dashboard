@@ -42,6 +42,7 @@ const Navbar = () => {
     .toUpperCase();
   const roleName = user?.role?.name || user?.role?.title || user?.role || 'Staff';
   const hospitalName = user?.hospitalAssignments?.[0]?.hospital?.name || 'No hospital assigned';
+  const assignmentRole = user?.hospitalAssignments?.[0]?.role || roleName;
 
   const handleLogout = () => {
     logoutUser();
@@ -49,33 +50,37 @@ const Navbar = () => {
   };
 
   return (
-    <header className="sticky top-0 z-10 flex items-center justify-between gap-4 h-[72px] px-8 bg-white/90 backdrop-blur-sm border-b border-slate-200">
-      <div className="flex-1" />
+    <header className="sticky top-0 z-10 flex min-h-20 items-center justify-between gap-6 border-b border-slate-200 bg-white px-6 md:px-8">
+      <div className="min-w-0">
+        <h1 className="truncate text-base font-semibold text-slate-900 md:text-lg">
+          Welcome back, {fullName} <span aria-hidden="true">👋</span>
+        </h1>
+        <p className="mt-1 truncate text-xs text-slate-500 md:text-[13px]">
+          Here&apos;s what&apos;s happening in your hospital today.
+        </p>
+      </div>
 
-      <div className="flex items-center gap-5 shrink-0">
+      <div className="flex shrink-0 items-center gap-3 md:gap-5">
         <button
-          className="relative w-9 h-9 rounded-full flex items-center justify-center hover:bg-slate-100 transition-colors"
+          className="relative flex h-10 w-10 items-center justify-center rounded-full text-slate-500 transition-colors hover:bg-slate-100"
           aria-label="Notifications"
         >
-          <Bell className="w-[18px] h-[18px] text-slate-500" strokeWidth={2} />
-          <span className="absolute top-2 right-2 flex h-2 w-2">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#EF4444] opacity-60" />
-            <span className="relative inline-flex h-2 w-2 rounded-full bg-[#EF4444]" />
+          <Bell className="h-[19px] w-[19px]" strokeWidth={1.8} />
+          <span className="absolute right-0.5 top-0.5 flex h-[15px] min-w-[15px] items-center justify-center rounded-full bg-[#EF4444] px-1 text-[9px] font-bold leading-none text-white">
+            3
           </span>
         </button>
 
-        <div className="w-px h-6 bg-slate-200" />
-
-        <button className="flex items-center gap-3 group" type="button">
-          <div className="w-9 h-9 rounded-full bg-gradient-to-br from-[#6366F1] to-[#14B8A6] flex items-center justify-center text-white text-xs font-semibold font-['Space_Grotesk'] shadow-sm">
+        <button className="group flex items-center gap-2.5 text-left" type="button">
+          <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#2196B5] text-xs font-semibold text-white shadow-sm">
             {initials}
           </div>
-          <div className="text-left hidden sm:block">
-            <p className="text-[13px] font-medium text-slate-800 leading-tight">{fullName}</p>
-            <p className="text-[11px] text-slate-400 leading-tight">{roleName} · {hospitalName}</p>
+          <div className="hidden min-w-0 sm:block">
+            <p className="max-w-52 truncate text-[13px] font-semibold leading-tight text-slate-800">{fullName}</p>
+            <p className="mt-1 max-w-52 truncate text-[11px] leading-tight text-slate-400">{assignmentRole} · {hospitalName}</p>
           </div>
           <ChevronDown
-            className="w-4 h-4 text-slate-400 group-hover:text-slate-600 transition-colors"
+            className="h-4 w-4 text-slate-400 transition-colors group-hover:text-slate-600"
             strokeWidth={2}
           />
         </button>
@@ -83,10 +88,10 @@ const Navbar = () => {
         <button
           type="button"
           onClick={handleLogout}
-          className="flex h-9 w-9 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-600 transition-colors hover:border-rose-200 hover:bg-rose-50 hover:text-rose-600"
+          className="flex h-10 w-10 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-600 transition-colors hover:border-rose-200 hover:bg-rose-50 hover:text-rose-600"
           aria-label="Logout"
         >
-          <LogOut className="h-4 w-4" strokeWidth={2} />
+          <LogOut className="h-[18px] w-[18px]" strokeWidth={1.8} />
         </button>
       </div>
     </header>

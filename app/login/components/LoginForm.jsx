@@ -68,7 +68,7 @@ export default function LoginForm() {
       } else if (roleId === 3) {
         router.replace("/dmo/dashboard");
       } else if (roleId === 4 || roleId === 5) {
-        router.replace("/hospital/dashboard");
+        router.replace("/hospital/home");
       } else {
         setError("Your account role is not configured.");
       }

@@ -1,3 +1,4 @@
+import { notifySessionExpired } from "@/store/authStore";
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
 
 const getAuthToken = () => {
@@ -51,8 +52,7 @@ export const createHospitalApi = async (hospitalData) => {
 
   if (!response.ok) {
     if (response.status === 401 && typeof window !== "undefined") {
-      sessionStorage.removeItem("authState");
-      window.location.href = data?.redirectTo || "/login";
+      notifySessionExpired();
     }
 
     throw new Error(data.message || "Failed to create hospital");
@@ -76,8 +76,7 @@ export const getHospitalsApi = async () => {
 
   if (!response.ok) {
     if (response.status === 401 && typeof window !== "undefined") {
-      sessionStorage.removeItem("authState");
-      window.location.href = data?.redirectTo || "/login";
+      notifySessionExpired();
     }
 
     throw new Error(data.message || "Failed to get hospitals");
@@ -101,8 +100,7 @@ export const getHospitalByIdApi = async (id) => {
 
   if (!response.ok) {
     if (response.status === 401 && typeof window !== "undefined") {
-      sessionStorage.removeItem("authState");
-      window.location.href = data?.redirectTo || "/login";
+      notifySessionExpired();
     }
 
     throw new Error(data.message || "Failed to get hospital");
@@ -127,8 +125,7 @@ export const updateHospitalApi = async (id, hospitalData) => {
 
   if (!response.ok) {
     if (response.status === 401 && typeof window !== "undefined") {
-      sessionStorage.removeItem("authState");
-      window.location.href = data?.redirectTo || "/login";
+      notifySessionExpired();
     }
 
     throw new Error(data.message || "Failed to update hospital");
@@ -152,8 +149,7 @@ export const deleteHospitalApi = async (id) => {
 
   if (!response.ok) {
     if (response.status === 401 && typeof window !== "undefined") {
-      sessionStorage.removeItem("authState");
-      window.location.href = data?.redirectTo || "/login";
+      notifySessionExpired();
     }
 
     throw new Error(data.message || "Failed to delete hospital");

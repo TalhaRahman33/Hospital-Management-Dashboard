@@ -1,3 +1,4 @@
+import { notifySessionExpired } from "@/store/authStore";
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
 
 const getAuthToken = () => {
@@ -75,8 +76,7 @@ const handleApiError = async (
   // Authentication failed
   if (response.status === 401) {
     if (typeof window !== "undefined") {
-      sessionStorage.removeItem("authState");
-      window.location.href = data?.redirectTo || "/login";
+      notifySessionExpired();
     }
   }
 

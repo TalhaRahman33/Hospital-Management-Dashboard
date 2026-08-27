@@ -3,10 +3,11 @@
 import React from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { LayoutDashboard, BedDouble, ClipboardPlus, DoorOpen, Activity, Settings } from 'lucide-react'
+import { LayoutDashboard, BedDouble, ClipboardPlus, DoorOpen, Activity, Settings, Home } from 'lucide-react'
 import { useAuthStore } from '@/store/authStore'
 
 const NAV_ITEMS = [
+  { label: 'Home', href: '/hospital/home', icon: Home, accent: '#14B8A6' },
   { label: 'Dashboard', href: '/hospital/dashboard', icon: LayoutDashboard, accent: '#14B8A6' },
   { label: 'Patient', href: '/hospital/patient', icon: BedDouble, accent: '#6366F1' },
   { label: 'Checkup Patient', href: '/hospital/checkup-patient', icon: ClipboardPlus, accent: '#F59E0B' },

@@ -31,6 +31,13 @@ export const clearAuthSession = () => {
   }
 };
 
+export const notifySessionExpired = () => {
+  if (typeof window !== "undefined") {
+    clearAuthSession();
+    window.dispatchEvent(new CustomEvent("auth:session-expired"));
+  }
+};
+
 export const useAuthStore = create((set) => ({
   accessToken: initialAuth.accessToken,
   user: initialAuth.user,

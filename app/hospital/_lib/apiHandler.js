@@ -1,4 +1,5 @@
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
+import { notifySessionExpired } from "@/store/authStore";
 
 const getAuthToken = () => {
 	if (typeof window === "undefined") {
@@ -23,6 +24,10 @@ export const getCurrentUser = async () => {
 	const data = await response.json().catch(() => ({}));
 
 	if (!response.ok) {
+		if (response.status === 401 && typeof window !== "undefined") {
+			notifySessionExpired();
+		}
+
 		throw new Error(data?.message || "Failed to fetch current user");
 	}
 

@@ -1,4 +1,5 @@
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
+import { notifySessionExpired } from "@/store/authStore";
 
 const getAuthToken = () => {
   if (typeof window === "undefined") {
@@ -48,8 +49,7 @@ export const patientAPI = {
       const data = await response.json().catch(() => ({}));
 
       if (response.status === 401 && typeof window !== "undefined") {
-        sessionStorage.removeItem("authState");
-        window.location.href = data?.redirectTo || "/login";
+        notifySessionExpired();
       }
 
       throw new Error(data?.message || "Failed to create patient");
@@ -69,8 +69,7 @@ export const patientAPI = {
       const data = await response.json().catch(() => ({}));
 
       if (response.status === 401 && typeof window !== "undefined") {
-        sessionStorage.removeItem("authState");
-        window.location.href = data?.redirectTo || "/login";
+        notifySessionExpired();
       }
 
       throw new Error(data?.message || "Failed to fetch patients");
@@ -122,8 +121,7 @@ export const patientAPI = {
       const data = await response.json().catch(() => ({}));
 
       if (response.status === 401 && typeof window !== "undefined") {
-        sessionStorage.removeItem("authState");
-        window.location.href = data?.redirectTo || "/login";
+        notifySessionExpired();
       }
 
       throw new Error(data?.message || "Failed to update patient");
@@ -143,8 +141,7 @@ export const patientAPI = {
       const data = await response.json().catch(() => ({}));
 
       if (response.status === 401 && typeof window !== "undefined") {
-        sessionStorage.removeItem("authState");
-        window.location.href = data?.redirectTo || "/login";
+        notifySessionExpired();
       }
 
       throw new Error(data?.message || "Failed to delete patient");
