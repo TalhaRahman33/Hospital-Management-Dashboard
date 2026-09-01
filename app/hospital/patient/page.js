@@ -2,7 +2,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { UserPlus, AlertCircle, CheckCircle2, BedDouble } from "lucide-react";
+import { AlertCircle, CheckCircle2 } from "lucide-react";
 import PatientDialog from "./components/PatientDialog";
 import PatientTable from "./components/PatientTable";
 import { patientAPI } from "./_lib/apiHandler";
@@ -102,34 +102,17 @@ export default function PatientsPage() {
     }
   };
 
+  const handleAdmitPatient = (patient) => {
+    if (!patient) return;
+
+    const patientName = patient.name || "This patient";
+    setSuccess(`${patientName} has been marked for admission.`);
+    setTimeout(() => setSuccess(null), 3000);
+  };
+
   return (
     <div className="min-h-screen bg-slate-50 p-8">
       <div className="mx-auto max-w-7xl">
-        {/* Header */}
-        <div className="mb-8 flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-[#6366F1]/10 to-[#14B8A6]/10">
-              <BedDouble className="h-6 w-6 text-[#6366F1]" strokeWidth={2} />
-            </div>
-            <div>
-              <h1 className="font-['Space_Grotesk'] text-2xl font-semibold text-slate-900">
-                Patients
-              </h1>
-              <p className="mt-0.5 text-[13px] text-slate-500">
-                Manage patient information and records
-              </p>
-            </div>
-          </div>
-          <button
-            onClick={handleAddPatient}
-            disabled={isLoading}
-            className="flex items-center gap-2 rounded-lg bg-gradient-to-r from-[#6366F1] to-[#14B8A6] px-5 py-2.5 text-[13.5px] font-semibold text-white shadow-sm transition-all hover:shadow-md hover:brightness-105 active:scale-[0.99] disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            <UserPlus className="h-4 w-4" strokeWidth={2.25} />
-            Add Patient
-          </button>
-        </div>
-
         {/* Alert Messages */}
         {error && (
           <div className="mb-4 flex items-start gap-3 rounded-xl border border-rose-200 bg-rose-50 px-4 py-3.5">
@@ -146,12 +129,14 @@ export default function PatientsPage() {
         )}
 
         {/* Content */}
-        <div className="rounded-2xl bg-white shadow-sm border border-slate-100">
-          <div className="p-6">
+        <div className="rounded-2xl border border-slate-100 bg-white shadow-sm">
+          <div className="p-4 md:p-5">
             <PatientTable
               patients={patients}
+              onAdd={handleAddPatient}
               onEdit={handleEditPatient}
               onDelete={handleDeletePatient}
+              onAdmit={handleAdmitPatient}
               isLoading={isLoading}
             />
           </div>
