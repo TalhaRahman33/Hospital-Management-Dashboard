@@ -1,11 +1,12 @@
 // app/hospital/patient/page.js
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { AlertCircle, CheckCircle2 } from "lucide-react";
 import PatientDialog from "./components/PatientDialog";
 import PatientTable from "./components/PatientTable";
 import { patientAPI } from "./_lib/apiHandler";
+import { checkupAPI } from "../checkup-patient/_lib/apiHandler";
 
 export default function PatientsPage() {
   const [patients, setPatients] = useState([]);
@@ -16,11 +17,7 @@ export default function PatientsPage() {
   const [success, setSuccess] = useState(null);
 
   // Fetch all patients on component mount
-  useEffect(() => {
-    fetchPatients();
-  }, []);
-
-  const fetchPatients = async () => {
+  const fetchPatients = useCallback(async () => {
     try {
       setIsLoading(true);
       setError(null);
@@ -32,7 +29,12 @@ export default function PatientsPage() {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    const timer = setTimeout(fetchPatients, 0);
+    return () => clearTimeout(timer);
+  }, [fetchPatients]);
 
   const handleAddPatient = () => {
     setSelectedPatient(null);
@@ -102,12 +104,23 @@ export default function PatientsPage() {
     }
   };
 
-  const handleAdmitPatient = (patient) => {
+  const handleAdmitPatient = async (patient) => {
     if (!patient) return;
 
-    const patientName = patient.name || "This patient";
-    setSuccess(`${patientName} has been marked for admission.`);
-    setTimeout(() => setSuccess(null), 3000);
+    try {
+      setIsLoading(true);
+      setError(null);
+      await checkupAPI.create({
+        patientId: Number(patient.id),
+        symptoms: patient.purposeOfVisit?.trim() || "Patient admitted for checkup",
+      });
+      setSuccess(`${patient.name || "Patient"} has been added to the checkup queue.`);
+      setTimeout(() => setSuccess(null), 3000);
+    } catch (err) {
+      setError(err.message || "Failed to add patient to the checkup queue");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
