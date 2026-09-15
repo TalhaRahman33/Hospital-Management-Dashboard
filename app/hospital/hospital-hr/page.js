@@ -17,6 +17,11 @@ export default function HospitalHRPage() {
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(null);
 
+  const roleId = Number(user?.roleId);
+  const roleName = user?.role?.name || user?.role?.title || user?.role;
+  const canAddEmployee = roleId === 5 || roleName === "HOSPITAL_HR";
+  const canDeleteEmployee = canAddEmployee;
+  const canEditOnlyName = roleId === 4 || roleName === "HFO";
   const hospitalName = user?.hospitalAssignments?.[0]?.hospital?.name || "Current Hospital";
 
   const fetchEmployees = async () => {
@@ -44,6 +49,8 @@ export default function HospitalHRPage() {
   }, []);
 
   const handleAddEmployee = () => {
+    if (!canAddEmployee) return;
+
     setSelectedEmployee(null);
     setIsDialogOpen(true);
   };
@@ -59,12 +66,28 @@ export default function HospitalHRPage() {
   };
 
   const handleSubmitForm = async (formData) => {
+    if (!selectedEmployee && !canAddEmployee) {
+      setError("Only Hospital HR can add employees.");
+      return;
+    }
+
     try {
       setIsLoading(true);
       setError(null);
 
       const payload = {
-        ...formData,
+        ...(selectedEmployee && canEditOnlyName
+          ? {
+              ...selectedEmployee,
+              ...formData,
+              designation: selectedEmployee.designation,
+              department: selectedEmployee.department,
+              qualification: selectedEmployee.qualification,
+              pmcNo: selectedEmployee.pmcNo,
+              contactNo: selectedEmployee.contactNo,
+              status: selectedEmployee.status,
+            }
+          : formData),
         hospitalName,
         hospitalId: user?.hospitalAssignments?.[0]?.hospitalId || user?.hospitalAssignments?.[0]?.hospital?.id,
       };
@@ -111,6 +134,11 @@ export default function HospitalHRPage() {
   };
 
   const handleDeleteEmployee = async (employeeId) => {
+    if (!canDeleteEmployee) {
+      setError("Only Hospital HR can delete employees.");
+      return;
+    }
+
     const confirmed = await Swal.fire({
       title: "Delete this employee?",
       text: "This action cannot be undone.",
@@ -162,6 +190,8 @@ export default function HospitalHRPage() {
           <HospitalHRTable
             employees={employees}
             onAdd={handleAddEmployee}
+            canAdd={canAddEmployee}
+            canDelete={canDeleteEmployee}
             onEdit={handleEditEmployee}
             onDelete={handleDeleteEmployee}
             isLoading={isLoading}
@@ -190,6 +220,7 @@ export default function HospitalHRPage() {
         initialData={selectedEmployee}
         isLoading={isLoading}
         hospitalName={hospitalName}
+        canEditOnlyName={canEditOnlyName}
       />
     </div>
   );

@@ -72,10 +72,10 @@ export default function UserForm({
   const isPMO = roleId === 2;
   const isDMO = roleId === 3;
   const isHFO = roleId === 4;
-  const isDoctor = roleId === 5;
+  const isHospitalHR = roleId === 5;
 
   const isMultipleHospitalRole = isPMO || isDMO;
-  const isSingleHospitalRole = isHFO || isDoctor;
+  const isSingleHospitalRole = isHFO || isHospitalHR;
 
   const handleHospitalChange = (e) => {
     const value = Number(e.target.value);
@@ -217,7 +217,8 @@ export default function UserForm({
             <option value="2">PMO</option>
             <option value="3">DMO</option>
             <option value="4">HFO</option>
-            <option value="5">DOCTORS</option>
+            <option value="5">HOSPITAL_HR</option>
+            <option value="6">DOCTOR</option>
           </select>
         </div>
 

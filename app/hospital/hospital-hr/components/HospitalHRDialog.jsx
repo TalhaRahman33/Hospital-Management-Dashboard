@@ -11,6 +11,7 @@ export default function HospitalHRDialog({
   initialData = null,
   isLoading,
   hospitalName,
+  canEditOnlyName,
 }) {
   const [show, setShow] = useState(false);
 
@@ -71,6 +72,7 @@ export default function HospitalHRDialog({
             onSubmit={onSubmit}
             isLoading={isLoading}
             hospitalName={hospitalName}
+            canEditOnlyName={canEditOnlyName}
           />
         </div>
       </div>

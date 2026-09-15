@@ -10,7 +10,7 @@ const STATUS_STYLES = {
   RETIRED: { bg: "#EF44441A", text: "#B91C1C" },
 };
 
-export default function HospitalHRTable({ employees, onAdd, onEdit, onDelete, isLoading }) {
+export default function HospitalHRTable({ employees, onAdd, canAdd, canDelete, onEdit, onDelete, isLoading }) {
   const [query, setQuery] = useState("");
   const [openMenuId, setOpenMenuId] = useState(null);
   const menuRefs = useRef({});
@@ -63,7 +63,8 @@ export default function HospitalHRTable({ employees, onAdd, onEdit, onDelete, is
 
         <button
           onClick={onAdd}
-          disabled={isLoading}
+          disabled={isLoading || !canAdd}
+          title={!canAdd ? "Only Hospital HR can add employees" : "Add employee"}
           className="flex shrink-0 items-center justify-center gap-1.5 self-end rounded-lg bg-gradient-to-r from-[#F97316] to-[#F59E0B] px-4 py-2 text-[12.5px] font-semibold text-white shadow-sm transition-all hover:brightness-105 hover:shadow-md active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-50 sm:self-auto"
         >
           <UserPlus className="h-3.5 w-3.5" strokeWidth={2.25} />
@@ -191,7 +192,9 @@ export default function HospitalHRTable({ employees, onAdd, onEdit, onDelete, is
                                 onDelete(employee.id);
                                 setOpenMenuId(null);
                               }}
-                              className="flex w-full items-center gap-2 rounded-lg px-2.5 py-2 text-left text-[12.5px] text-rose-600 transition-colors hover:bg-rose-50"
+                              disabled={!canDelete || isLoading}
+                              title={!canDelete ? "Only Hospital HR can delete employees" : "Delete employee"}
+                              className="flex w-full items-center gap-2 rounded-lg px-2.5 py-2 text-left text-[12.5px] text-rose-600 transition-colors hover:bg-rose-50 disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:bg-transparent"
                             >
                               <Trash2 className="h-[13px] w-[13px]" strokeWidth={2} />
                               Delete

@@ -16,9 +16,9 @@ export default function UserDialog({
   if (!open) return null;
 
   return (
-    <div className="fixed inset-0 z-[60] flex items-center justify-center bg-slate-950/45 p-4 backdrop-blur-sm">
-      <div className="w-full max-w-3xl rounded-3xl border border-slate-200 bg-white shadow-2xl">
-        <div className="flex items-center justify-between border-b border-slate-100 px-6 py-4">
+    <div className="fixed inset-0 z-[60] flex items-center justify-center bg-slate-950/45 px-4 py-6 backdrop-blur-sm sm:py-8">
+      <div className="flex max-h-full w-full max-w-3xl flex-col overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-2xl">
+        <div className="flex shrink-0 items-center justify-between border-b border-slate-100 px-5 py-3 sm:px-6 sm:py-4">
           <div>
             <h3 className="text-lg font-semibold text-slate-900">
               {mode === 'edit' ? 'Edit User' : 'Add User'}
@@ -38,7 +38,7 @@ export default function UserDialog({
           </button>
         </div>
 
-        <div className="p-6">
+        <div className="min-h-0 overflow-y-auto p-4 sm:p-6">
           <UserForm
             hospitals={hospitals}
             editingUser={editingUser}

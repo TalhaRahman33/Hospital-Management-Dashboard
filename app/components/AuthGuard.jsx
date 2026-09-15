@@ -86,7 +86,7 @@ export default function AuthGuard({ children, allowedRoles = [] }) {
         return;
       }
 
-      if (roleId !== 4 && roleId !== 5) {
+      if (roleId !== 4 && roleId !== 5 && roleId !== 6) {
         return;
       }
     }

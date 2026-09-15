@@ -168,6 +168,12 @@ export default function OTPForm() {
           );
           break;
 
+        case 6:
+          router.replace(
+            "/hospital/home"
+          );
+          break;
+
         default:
           setError(
             "Your account role is not configured."

@@ -29,7 +29,13 @@ const DEPARTMENT_OPTIONS = [
   "Administration",
 ];
 
-export default function HospitalHRForm({ initialData = null, onSubmit, isLoading, hospitalName }) {
+export default function HospitalHRForm({
+  initialData = null,
+  onSubmit,
+  isLoading,
+  hospitalName,
+  canEditOnlyName = false,
+}) {
   const [formData, setFormData] = useState({
     employeeName: "",
     designation: "",
@@ -150,7 +156,7 @@ export default function HospitalHRForm({ initialData = null, onSubmit, isLoading
               value={formData.designation}
               onChange={handleChange}
               className={`${inputClassName("designation")} pl-9 appearance-none`}
-              disabled={isLoading}
+              disabled={isLoading || (canEditOnlyName && Boolean(initialData))}
             >
               <option value="">Select designation</option>
               {DESIGNATION_OPTIONS.map((option) => (
@@ -173,7 +179,7 @@ export default function HospitalHRForm({ initialData = null, onSubmit, isLoading
             value={formData.department}
             onChange={handleChange}
             className={inputClassName("department")}
-            disabled={isLoading}
+            disabled={isLoading || (canEditOnlyName && Boolean(initialData))}
           >
             <option value="">Select department</option>
             {DEPARTMENT_OPTIONS.map((option) => (
@@ -199,7 +205,7 @@ export default function HospitalHRForm({ initialData = null, onSubmit, isLoading
               onChange={handleChange}
               className={`${inputClassName("qualification")} pl-9`}
               placeholder="e.g. MBA, HR"
-              disabled={isLoading}
+              disabled={isLoading || (canEditOnlyName && Boolean(initialData))}
             />
           </div>
           {errors.qualification && <p className="mt-1.5 text-xs text-rose-500">{errors.qualification}</p>}
@@ -219,7 +225,7 @@ export default function HospitalHRForm({ initialData = null, onSubmit, isLoading
               onChange={handleChange}
               className={`${inputClassName("pmcNo")} pl-9`}
               placeholder="e.g. PMC-12345"
-              disabled={isLoading}
+              disabled={isLoading || (canEditOnlyName && Boolean(initialData))}
             />
           </div>
           {errors.pmcNo && <p className="mt-1.5 text-xs text-rose-500">{errors.pmcNo}</p>}
@@ -239,7 +245,7 @@ export default function HospitalHRForm({ initialData = null, onSubmit, isLoading
               onChange={handleChange}
               className={`${inputClassName("contactNo")} pl-9`}
               placeholder="0300-1234567"
-              disabled={isLoading}
+              disabled={isLoading || (canEditOnlyName && Boolean(initialData))}
             />
           </div>
           {errors.contactNo && <p className="mt-1.5 text-xs text-rose-500">{errors.contactNo}</p>}
@@ -256,7 +262,7 @@ export default function HospitalHRForm({ initialData = null, onSubmit, isLoading
           value={formData.status}
           onChange={handleChange}
           className={inputClassName("status")}
-          disabled={isLoading}
+          disabled={isLoading || (canEditOnlyName && Boolean(initialData))}
         >
           {STATUS_OPTIONS.map((status) => (
             <option key={status} value={status}>
