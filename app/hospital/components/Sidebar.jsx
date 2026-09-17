@@ -11,6 +11,7 @@ const NAV_ITEMS = [
   { label: 'Dashboard', href: '/hospital/dashboard', icon: LayoutDashboard },
   { label: 'Patient', href: '/hospital/patient', icon: BedDouble },
   { label: 'Checkup Patient', href: '/hospital/checkup-patient', icon: ClipboardPlus },
+  { label: 'In-Patient', href: '/hospital/in-patient', icon: BedDouble },
   { label: 'Discharge Patient', href: '/hospital/discharge-patient', icon: DoorOpen },
   { label: 'Hospital HR', href: '/hospital/hospital-hr', icon: User },
 ]

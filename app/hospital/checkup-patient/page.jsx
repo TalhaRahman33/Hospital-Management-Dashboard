@@ -14,8 +14,9 @@ import {
 } from "lucide-react";
 import { patientAPI } from "../patient/_lib/apiHandler";
 import { checkupAPI } from "./_lib/apiHandler";
+import { CHECKUP_ACTIVE_STATUSES, getActiveCheckupPatientIds, getItems } from "../_lib/patientWorkflow";
 
-const STATUSES = ["", "WAITING", "IN_PROGRESS", "COMPLETED", "CANCELLED"];
+const STATUSES = ["", "WAITING", "IN_PROGRESS"];
 const STATUS_STYLES = {
   WAITING: "bg-amber-50 text-amber-700",
   IN_PROGRESS: "bg-sky-50 text-sky-700",
@@ -23,12 +24,10 @@ const STATUS_STYLES = {
   CANCELLED: "bg-rose-50 text-rose-700",
 };
 
-const getItems = (data, key) => data?.[key] || (Array.isArray(data) ? data : []);
-
 export default function CheckupPatientPage() {
   const [patients, setPatients] = useState([]);
   const [checkups, setCheckups] = useState([]);
-  const [status, setStatus] = useState("WAITING");
+  const [status, setStatus] = useState("");
   const [patientId, setPatientId] = useState("");
   const [symptoms, setSymptoms] = useState("");
   const [selected, setSelected] = useState(null);
@@ -45,8 +44,11 @@ export default function CheckupPatientPage() {
         patientAPI.getAll(),
         checkupAPI.getAll(status),
       ]);
-      setPatients(patientData?.patients || []);
-      setCheckups(getItems(checkupData, "checkups"));
+      const loadedCheckups = getItems(checkupData, "checkups");
+      const activeCheckups = loadedCheckups.filter((item) => CHECKUP_ACTIVE_STATUSES.includes(item.status));
+      const activePatientIds = getActiveCheckupPatientIds(activeCheckups);
+      setPatients((patientData?.patients || []).filter((patient) => !activePatientIds.has(Number(patient.id))));
+      setCheckups(status ? loadedCheckups : activeCheckups);
     } catch (error) {
       setMessage({ type: "error", text: error.message });
     } finally {

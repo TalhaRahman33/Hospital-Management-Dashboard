@@ -7,6 +7,7 @@ import PatientDialog from "./components/PatientDialog";
 import PatientTable from "./components/PatientTable";
 import { patientAPI } from "./_lib/apiHandler";
 import { checkupAPI } from "../checkup-patient/_lib/apiHandler";
+import { getActiveCheckupPatientIds, getItems } from "../_lib/patientWorkflow";
 
 export default function PatientsPage() {
   const [patients, setPatients] = useState([]);
@@ -21,8 +22,12 @@ export default function PatientsPage() {
     try {
       setIsLoading(true);
       setError(null);
-      const response = await patientAPI.getAll();
-      setPatients(response.patients || []);
+      const [patientResponse, checkupResponse] = await Promise.all([
+        patientAPI.getAll(),
+        checkupAPI.getAll(),
+      ]);
+      const activePatientIds = getActiveCheckupPatientIds(getItems(checkupResponse, "checkups"));
+      setPatients((patientResponse.patients || []).filter((patient) => !activePatientIds.has(Number(patient.id))));
     } catch (err) {
       setError(err.message || "Failed to fetch patients");
       console.error("Error fetching patients:", err);
@@ -107,6 +112,8 @@ export default function PatientsPage() {
   const handleAdmitPatient = async (patient) => {
     if (!patient) return;
 
+    setPatients((currentPatients) => currentPatients.filter((item) => item.id !== patient.id));
+
     try {
       setIsLoading(true);
       setError(null);
@@ -117,6 +124,11 @@ export default function PatientsPage() {
       setSuccess(`${patient.name || "Patient"} has been added to the checkup queue.`);
       setTimeout(() => setSuccess(null), 3000);
     } catch (err) {
+      setPatients((currentPatients) =>
+        currentPatients.some((item) => item.id === patient.id)
+          ? currentPatients
+          : [...currentPatients, patient]
+      );
       setError(err.message || "Failed to add patient to the checkup queue");
     } finally {
       setIsLoading(false);
