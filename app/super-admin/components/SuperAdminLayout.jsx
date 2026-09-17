@@ -8,6 +8,7 @@ import { getCurrentUser } from '../_lib/apiHandler';
 
 export default function SuperAdminLayout({ children }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const { accessToken, user, updateUser } = useAuthStore();
 
   useEffect(() => {
@@ -31,13 +32,23 @@ export default function SuperAdminLayout({ children }) {
     .join(' ') || user?.name || 'Super Admin';
 
   return (
-    <div className="min-h-screen bg-[linear-gradient(135deg,#f8fbff_0%,#f3f8ff_45%,#eefbf7_100%)] text-slate-800">
+    <div className="min-h-screen bg-slate-50 text-slate-800">
       <div className="flex min-h-screen">
-        <SuperAdminSidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} userName={userName} />
+        <SuperAdminSidebar
+          isOpen={sidebarOpen}
+          isCollapsed={sidebarCollapsed}
+          onClose={() => setSidebarOpen(false)}
+          onToggle={() => setSidebarCollapsed((collapsed) => !collapsed)}
+          userName={userName}
+        />
 
-        <div className="flex-1">
-          <SuperAdminNavbar onMenuClick={() => setSidebarOpen(true)} userName={userName} />
-          <main className="p-4 md:p-8">{children}</main>
+        <div className="min-w-0 flex-1">
+          <SuperAdminNavbar
+            onMenuClick={() => setSidebarOpen(true)}
+            userName={userName}
+            isSidebarCollapsed={sidebarCollapsed}
+          />
+          <main className="p-4 md:p-6 lg:p-8">{children}</main>
         </div>
       </div>
     </div>

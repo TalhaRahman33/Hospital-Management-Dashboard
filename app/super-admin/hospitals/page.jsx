@@ -15,7 +15,7 @@ export default function HospitalsPage() {
 
   return (
     <div className="w-full min-w-0 overflow-x-hidden">
-      <div className="mx-auto w-full max-w-7xl px-4 py-5 sm:px-6 sm:py-8 lg:px-8">
+      <div className="w-full px-0 py-1 sm:py-2">
         <section className="mb-6 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
           <div className="flex flex-col gap-5 p-5 sm:p-7 md:flex-row md:items-center md:justify-between">
             <div className="flex min-w-0 items-start gap-4">

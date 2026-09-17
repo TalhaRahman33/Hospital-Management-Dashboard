@@ -143,11 +143,11 @@ export default function UsersPage() {
 
   return (
     <div className="space-y-6">
-      <section className="flex flex-col gap-4 overflow-hidden rounded-[28px] border border-slate-200 bg-gradient-to-br from-sky-600 via-sky-500 to-emerald-500 p-6 text-white shadow-xl shadow-sky-200/70 md:flex-row md:items-center md:justify-between">
+      <section className="flex flex-col gap-4 overflow-hidden rounded-2xl border border-slate-200 bg-white p-6 shadow-sm md:flex-row md:items-center md:justify-between">
         <div>
-          <p className="text-sm font-semibold uppercase tracking-[0.25em] text-sky-100">User Management</p>
-          <h1 className="mt-2 text-3xl font-semibold">Users</h1>
-          <p className="mt-3 max-w-2xl text-sm text-sky-50/90">
+          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-sky-700">User Management</p>
+          <h1 className="mt-2 text-3xl font-semibold tracking-tight text-slate-900">Users</h1>
+          <p className="mt-3 max-w-2xl text-sm text-slate-500">
             Create, review, and manage PMO, DMO, HFO, and doctor accounts with a consistent workflow.
           </p>
         </div>
@@ -158,7 +158,7 @@ export default function UsersPage() {
             setEditingUser(null);
             setDialogOpen(true);
           }}
-          className="inline-flex items-center justify-center gap-2 rounded-2xl bg-white px-4 py-3 text-sm font-semibold text-sky-700 shadow-lg transition hover:bg-sky-50"
+          className="inline-flex items-center justify-center gap-2 rounded-xl bg-sky-600 px-4 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-sky-700"
         >
           <Plus className="h-4 w-4" />
           Add User

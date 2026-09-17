@@ -124,8 +124,8 @@ export default function PatientsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 p-8">
-      <div className="mx-auto max-w-7xl">
+    <div className="w-full min-w-0">
+      <div className="w-full">
         {/* Alert Messages */}
         {error && (
           <div className="mb-4 flex items-start gap-3 rounded-xl border border-rose-200 bg-rose-50 px-4 py-3.5">
