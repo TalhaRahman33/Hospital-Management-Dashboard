@@ -5,7 +5,7 @@ import { usePathname, useRouter } from 'next/navigation';
 
 import { useAuthStore } from '@/store/authStore';
 
-const PUBLIC_PATHS = ['/login', '/verify-2fa', '/'];
+const PUBLIC_PATHS = ['/login', '/forgot-password', '/verify-2fa', '/'];
 const subscribeToHydration = () => () => {};
 
 export default function AuthGuard({ children, allowedRoles = [] }) {
