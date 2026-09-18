@@ -12,9 +12,8 @@ import {
   Search,
   XCircle,
 } from "lucide-react";
-import { patientAPI } from "../patient/_lib/apiHandler";
 import { checkupAPI } from "./_lib/apiHandler";
-import { CHECKUP_ACTIVE_STATUSES, getActiveCheckupPatientIds, getItems } from "../_lib/patientWorkflow";
+import { getItems } from "../_lib/patientWorkflow";
 
 const STATUSES = ["", "WAITING", "IN_PROGRESS"];
 const STATUS_STYLES = {
@@ -25,7 +24,6 @@ const STATUS_STYLES = {
 };
 
 export default function CheckupPatientPage() {
-  const [patients, setPatients] = useState([]);
   const [checkups, setCheckups] = useState([]);
   const [status, setStatus] = useState("");
   const [patientId, setPatientId] = useState("");
@@ -40,15 +38,10 @@ export default function CheckupPatientPage() {
   const loadData = useCallback(async () => {
     try {
       setLoading(true);
-      const [patientData, checkupData] = await Promise.all([
-        patientAPI.getAll(),
-        checkupAPI.getAll(status),
-      ]);
-      const loadedCheckups = getItems(checkupData, "checkups");
-      const activeCheckups = loadedCheckups.filter((item) => CHECKUP_ACTIVE_STATUSES.includes(item.status));
-      const activePatientIds = getActiveCheckupPatientIds(activeCheckups);
-      setPatients((patientData?.patients || []).filter((patient) => !activePatientIds.has(Number(patient.id))));
-      setCheckups(status ? loadedCheckups : activeCheckups);
+      const statuses = status ? [status] : ["WAITING", "IN_PROGRESS"];
+      const responses = await Promise.all(statuses.map((value) => checkupAPI.getAll(value)));
+      const loadedCheckups = responses.flatMap((response) => getItems(response, "checkups"));
+      setCheckups(loadedCheckups.filter((item) => ["WAITING", "IN_PROGRESS"].includes(item.status)));
     } catch (error) {
       setMessage({ type: "error", text: error.message });
     } finally {

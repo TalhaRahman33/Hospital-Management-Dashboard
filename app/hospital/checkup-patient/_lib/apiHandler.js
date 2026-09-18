@@ -17,7 +17,7 @@ const request = async (path, options = {}) => {
   const token = getAuthToken();
   if (token) headers.Authorization = `Bearer ${token}`;
 
-  const response = await fetch(`${API_BASE_URL}${path}`, { ...options, headers });
+  const response = await fetch(`${API_BASE_URL}${path}`, { ...options, credentials: "include", headers });
   const data = await response.json().catch(() => ({}));
 
   if (!response.ok) {

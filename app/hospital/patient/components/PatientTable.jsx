@@ -81,7 +81,7 @@ export default function PatientTable({ patients, onAdd, onEdit, onDelete, onAdmi
           <table className="w-full border-collapse text-left">
             <thead className="sticky top-0 z-10">
               <tr className="border-b border-slate-100 bg-slate-50">
-                {["Visit #", "Name", "CNIC", "Gender", "Purpose", "Actions"].map((label) => (
+                {["Visit #", "Name", "CNIC", "Gender", "Purpose", "Status", "Actions"].map((label) => (
                   <th
                     key={label}
                     className="px-3 py-2 text-[10.5px] font-semibold uppercase tracking-wide text-slate-400"
@@ -109,7 +109,7 @@ export default function PatientTable({ patients, onAdd, onEdit, onDelete, onAdmi
                     key={patient.id}
                     className={`transition-colors hover:bg-slate-50 ${
                       idx !== filteredPatients.length - 1 ? "border-b border-slate-100" : ""
-                    }`}
+                  }`}
                   >
                     <td className="px-3 py-2">
                       <span className="rounded-md bg-slate-50 px-1.5 py-0.5 font-mono text-[11px] text-slate-500">
@@ -145,6 +145,12 @@ export default function PatientTable({ patients, onAdd, onEdit, onDelete, onAdmi
                       <div className="truncate text-[12.5px] text-slate-600" title={patient.purposeOfVisit}>
                         {patient.purposeOfVisit}
                       </div>
+                    </td>
+
+                    <td className="px-3 py-2">
+                      <span className="rounded-full bg-slate-100 px-2 py-0.5 text-[11px] font-semibold text-slate-600">
+                        REGISTERED
+                      </span>
                     </td>
 
                     <td className="px-3 py-2">

@@ -6,8 +6,6 @@ import { AlertCircle, CheckCircle2 } from "lucide-react";
 import PatientDialog from "./components/PatientDialog";
 import PatientTable from "./components/PatientTable";
 import { patientAPI } from "./_lib/apiHandler";
-import { checkupAPI } from "../checkup-patient/_lib/apiHandler";
-import { getActiveCheckupPatientIds, getItems } from "../_lib/patientWorkflow";
 
 export default function PatientsPage() {
   const [patients, setPatients] = useState([]);
@@ -22,12 +20,8 @@ export default function PatientsPage() {
     try {
       setIsLoading(true);
       setError(null);
-      const [patientResponse, checkupResponse] = await Promise.all([
-        patientAPI.getAll(),
-        checkupAPI.getAll(),
-      ]);
-      const activePatientIds = getActiveCheckupPatientIds(getItems(checkupResponse, "checkups"));
-      setPatients((patientResponse.patients || []).filter((patient) => !activePatientIds.has(Number(patient.id))));
+      const patientResponse = await patientAPI.getAll();
+      setPatients((patientResponse.patients || []).filter((patient) => patient.status === "REGISTERED"));
     } catch (err) {
       setError(err.message || "Failed to fetch patients");
       console.error("Error fetching patients:", err);
@@ -117,19 +111,17 @@ export default function PatientsPage() {
     try {
       setIsLoading(true);
       setError(null);
-      await checkupAPI.create({
-        patientId: Number(patient.id),
-        symptoms: patient.purposeOfVisit?.trim() || "Patient admitted for checkup",
-      });
+      const symptoms = window.prompt("Symptoms (optional)", patient.purposeOfVisit || "") ?? "";
+      await patientAPI.admit(patient.id, symptoms.trim());
       setSuccess(`${patient.name || "Patient"} has been added to the checkup queue.`);
-      setTimeout(() => setSuccess(null), 3000);
+      await fetchPatients();
     } catch (err) {
       setPatients((currentPatients) =>
         currentPatients.some((item) => item.id === patient.id)
           ? currentPatients
           : [...currentPatients, patient]
       );
-      setError(err.message || "Failed to add patient to the checkup queue");
+      setError(err.message || "Failed to admit patient");
     } finally {
       setIsLoading(false);
     }

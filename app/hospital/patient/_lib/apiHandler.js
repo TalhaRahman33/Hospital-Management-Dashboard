@@ -62,6 +62,7 @@ export const patientAPI = {
   getAll: async () => {
     const response = await fetch(`${API_BASE_URL}/patients`, {
       method: "GET",
+      credentials: "include",
       headers: buildHeaders(),
     });
 
@@ -73,6 +74,27 @@ export const patientAPI = {
       }
 
       throw new Error(data?.message || "Failed to fetch patients");
+    }
+
+    return response.json();
+  },
+
+  admit: async (id, symptoms = "") => {
+    const response = await fetch(`${API_BASE_URL}/patients/${id}/admit`, {
+      method: "POST",
+      credentials: "include",
+      headers: buildHeaders(true),
+      body: JSON.stringify({ symptoms }),
+    });
+
+    if (!response.ok) {
+      const data = await response.json().catch(() => ({}));
+
+      if (response.status === 401 && typeof window !== "undefined") {
+        notifySessionExpired();
+      }
+
+      throw new Error(data?.message || "Failed to admit patient");
     }
 
     return response.json();
