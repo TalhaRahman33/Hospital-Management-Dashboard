@@ -3,7 +3,7 @@
 import React from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { LayoutDashboard, BedDouble, ClipboardPlus, DoorOpen, Activity, Home, User, ChevronLeft, ChevronRight, X, Users } from 'lucide-react'
+import { LayoutDashboard, BedDouble, ClipboardPlus, DoorOpen, Activity, Home, User, ChevronLeft, ChevronRight, X, Users, CircleDollarSign } from 'lucide-react'
 import { useAuthStore } from '@/store/authStore'
 
 const NAV_ITEMS = [
@@ -13,6 +13,7 @@ const NAV_ITEMS = [
   { label: 'Checkup Patient', href: '/hospital/checkup-patient', icon: ClipboardPlus },
   { label: 'In-Patient', href: '/hospital/in-patient', icon: BedDouble },
   { label: 'Discharge Patient', href: '/hospital/discharge-patient', icon: DoorOpen },
+  { label: 'Package Rates', href: '/hospital/package-rates', icon: CircleDollarSign },
   { label: 'Hospital HR', href: '/hospital/hospital-hr', icon: User },
 ]
 
