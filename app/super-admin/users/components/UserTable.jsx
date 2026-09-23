@@ -3,6 +3,7 @@
 import {
   AlertCircle,
   Building2,
+  Filter,
   Inbox,
   Loader2,
   Mail,
@@ -17,19 +18,45 @@ const statusStyles = {
   pending: "bg-amber-50 text-amber-700 border-amber-200",
 };
 
-export default function UserTable({ users, loading, onEdit, onDelete }) {
+export default function UserTable({
+  users,
+  loading,
+  selectedRole,
+  onRoleChange,
+  onEdit,
+  onDelete,
+}) {
   return (
     <div className="rounded-[24px] border border-sky-100 bg-white/85 p-4 shadow-lg shadow-sky-100/60 backdrop-blur-sm md:p-6">
-      <div className="mb-5 flex items-center gap-3">
-        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-sky-600 shadow-md shadow-sky-200">
-          <ShieldCheck className="h-5 w-5 text-white" />
+      <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex items-center gap-3">
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-sky-600 shadow-md shadow-sky-200">
+            <ShieldCheck className="h-5 w-5 text-white" />
+          </div>
+          <div>
+            <h2 className="text-xl font-semibold tracking-tight text-slate-800">Users</h2>
+            <p className="text-sm text-slate-500">
+              {users.length} registered {users.length === 1 ? "account" : "accounts"}
+            </p>
+          </div>
         </div>
-        <div>
-          <h2 className="text-xl font-semibold tracking-tight text-slate-800">Users</h2>
-          <p className="text-sm text-slate-500">
-            {users.length} registered {users.length === 1 ? "account" : "accounts"}
-          </p>
-        </div>
+
+        <label className="flex items-center gap-2 text-sm text-slate-500">
+          <Filter className="h-4 w-4 text-sky-600" />
+          <span className="sr-only">Filter users by role</span>
+          <select
+            value={selectedRole}
+            onChange={(event) => onRoleChange(event.target.value)}
+            className="rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm font-medium text-slate-700 outline-none focus:border-sky-400 focus:ring-4 focus:ring-sky-100"
+            aria-label="Filter users by role"
+          >
+            <option value="all">All Users</option>
+            <option value="hfo">HFO</option>
+            <option value="dmo">DMO</option>
+            <option value="pmo">PMO</option>
+            <option value="hospital_hr">Hospital HR</option>
+          </select>
+        </label>
       </div>
 
       {loading && (

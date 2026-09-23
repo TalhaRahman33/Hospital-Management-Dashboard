@@ -51,7 +51,7 @@ const Sidebar = ({ isOpen, isCollapsed, onClose, onToggle }) => {
 
   return (
     <>
-      <aside className={`hidden shrink-0 flex-col border-r border-slate-200 bg-white px-3 py-5 transition-[width] duration-300 xl:flex ${isCollapsed ? 'w-[84px]' : 'w-64'}`}>
+      <aside className={`hidden h-screen shrink-0 flex-col overflow-hidden border-r border-slate-200 bg-white px-3 py-5 transition-[width] duration-300 xl:flex ${isCollapsed ? 'w-[84px]' : 'w-64'}`}>
         <div className={`mb-8 flex items-center ${isCollapsed ? 'justify-center' : 'justify-between gap-3 px-2'}`}>
           <div className="flex min-w-0 items-center gap-3">
             <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-slate-900 text-white">

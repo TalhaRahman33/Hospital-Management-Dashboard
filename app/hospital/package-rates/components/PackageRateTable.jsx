@@ -63,7 +63,7 @@ export default function PackageRateTable({ packageRates, onAdd, onEdit, onDelete
       ) : filteredRates.length === 0 ? (
         <div className="rounded-xl border border-dashed border-slate-200 py-12 text-center text-sm text-slate-500">No rates match &quot;{searchTerm}&quot;.</div>
       ) : (
-        <div className="max-h-[min(65vh,560px)] overflow-auto rounded-xl border border-slate-100">
+        <div className="max-h-[min(42vh,360px)] overflow-auto rounded-xl border border-slate-100">
           <table className="w-full min-w-[640px] border-collapse">
             <thead className="sticky top-0 z-10 bg-slate-50">
               <tr>
@@ -76,11 +76,11 @@ export default function PackageRateTable({ packageRates, onAdd, onEdit, onDelete
             <tbody>
               {filteredRates.map((rate) => (
                 <tr key={rate.id} className="border-b border-slate-100 last:border-b-0 hover:bg-slate-50">
-                  <td className="px-4 py-3 text-sm text-slate-800">{rate.lineOfTreatment}</td>
-                  <td className="px-4 py-3 text-sm text-slate-800">{rate.treatment}</td>
-                  <td className="px-4 py-3 text-sm font-medium text-slate-800">{Number(rate.price).toLocaleString()}</td>
+                  <td className="px-4 py-2.5 text-sm text-slate-800">{rate.lineOfTreatment}</td>
+                  <td className="px-4 py-2.5 text-sm text-slate-800">{rate.treatment}</td>
+                  <td className="px-4 py-2.5 text-sm font-medium text-slate-800">{Number(rate.price).toLocaleString()}</td>
                   {canManage && (
-                    <td className="px-4 py-3">
+                    <td className="px-4 py-2.5">
                       <div className="flex gap-2">
                         <button type="button" onClick={() => onEdit(rate)} disabled={isLoading} aria-label={`Edit ${rate.treatment}`} className="rounded-lg p-2 text-sky-600 hover:bg-sky-50 disabled:opacity-50"><Pencil className="h-4 w-4" /></button>
                         <button type="button" onClick={() => onDelete(rate.id)} disabled={isLoading} aria-label={`Delete ${rate.treatment}`} className="rounded-lg p-2 text-rose-600 hover:bg-rose-50 disabled:opacity-50"><Trash2 className="h-4 w-4" /></button>

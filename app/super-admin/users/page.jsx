@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Plus } from "lucide-react";
+import { Check, Plus, Users } from "lucide-react";
 import Swal from "sweetalert2";
 
 import UserDialog from "./components/UserDialog";
@@ -23,6 +23,15 @@ export default function UsersPage() {
   const [saving, setSaving] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [refreshKey, setRefreshKey] = useState(0);
+  const [selectedRole, setSelectedRole] = useState("all");
+
+  const roleCards = [
+    { key: "all", label: "All Users", role: null },
+    { key: "hfo", label: "HFO", role: "HFO" },
+    { key: "dmo", label: "DMO", role: "DMO" },
+    { key: "pmo", label: "PMO", role: "PMO" },
+    { key: "hospital_hr", label: "Hospital HR", role: "HOSPITAL_HR" },
+  ];
 
   const loadData = async () => {
     try {
@@ -49,7 +58,11 @@ export default function UsersPage() {
   };
 
   useEffect(() => {
-    loadData();
+    const loadUsersData = async () => {
+      await loadData();
+    };
+
+    loadUsersData();
   }, [refreshKey]);
 
   const handleSubmit = async (data) => {
@@ -141,15 +154,28 @@ export default function UsersPage() {
     setEditingUser(null);
   };
 
+  const getRoleName = (user) => user.role?.name?.toUpperCase() || "";
+
+  const roleCounts = roleCards.reduce((counts, card) => {
+    counts[card.key] = card.role
+      ? users.filter((user) => getRoleName(user) === card.role).length
+      : users.length;
+    return counts;
+  }, {});
+
+  const filteredUsers = selectedRole === "all"
+    ? users
+    : users.filter((user) => {
+        const selectedCard = roleCards.find((card) => card.key === selectedRole);
+        return selectedCard?.role === getRoleName(user);
+      });
+
   return (
     <div className="space-y-6">
-      <section className="flex flex-col gap-4 overflow-hidden rounded-2xl border border-slate-200 bg-white p-6 shadow-sm md:flex-row md:items-center md:justify-between">
-        <div>
+      <section className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
+        <div className="min-w-0">
           <p className="text-xs font-semibold uppercase tracking-[0.2em] text-sky-700">User Management</p>
           <h1 className="mt-2 text-3xl font-semibold tracking-tight text-slate-900">Users</h1>
-          <p className="mt-3 max-w-2xl text-sm text-slate-500">
-            Create, review, and manage PMO, DMO, HFO, and doctor accounts with a consistent workflow.
-          </p>
         </div>
 
         <button
@@ -158,16 +184,51 @@ export default function UsersPage() {
             setEditingUser(null);
             setDialogOpen(true);
           }}
-          className="inline-flex items-center justify-center gap-2 rounded-xl bg-sky-600 px-4 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-sky-700"
+          className="inline-flex items-center justify-center gap-2 self-start rounded-lg bg-sky-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-sky-700 md:self-auto"
         >
           <Plus className="h-4 w-4" />
           Add User
         </button>
       </section>
 
+      <section className="grid gap-2 sm:grid-cols-2 lg:grid-cols-5">
+        {roleCards.map((card) => {
+          const isSelected = selectedRole === card.key;
+
+          return (
+            <button
+              key={card.key}
+              type="button"
+              onClick={() => setSelectedRole(card.key)}
+              className={`rounded-xl border p-2.5 text-left shadow-sm transition ${
+                isSelected
+                  ? "border-sky-500 bg-sky-50 ring-2 ring-sky-100"
+                  : "border-slate-200 bg-white hover:border-sky-300 hover:bg-sky-50/40"
+              }`}
+            >
+              <div className="flex items-center justify-between gap-3">
+                <div className="flex h-7 w-7 items-center justify-center rounded-md bg-sky-100 text-sky-700">
+                  <Users className="h-3.5 w-3.5" />
+                </div>
+                {isSelected && <Check className="h-4 w-4 text-sky-600" />}
+              </div>
+              <p className="mt-2 truncate text-xs font-medium text-slate-500">{card.label}</p>
+              <p className="mt-0.5 text-xl font-semibold text-slate-900">
+                {loading ? "..." : roleCounts[card.key]}
+              </p>
+              <p className="mt-0.5 truncate text-[10px] text-slate-500">
+                {card.role ? `${card.label} users` : "Registered accounts"}
+              </p>
+            </button>
+          );
+        })}
+      </section>
+
       <UserTable
-        users={users}
+        users={filteredUsers}
         loading={loading}
+        selectedRole={selectedRole}
+        onRoleChange={setSelectedRole}
         onEdit={handleEdit}
         onDelete={handleDelete}
       />
